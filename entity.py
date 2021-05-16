@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, replace
 
 from actions import EscapeAction, MovementAction
 from basic_types import Color
@@ -12,5 +12,6 @@ class Entity:
     fg: Color
 
     def move(self, action: MovementAction):
+        ##return replace(self, x=self.x + action.dx, y=self.y + action.dy)
         self.x += action.dx
         self.y += action.dy

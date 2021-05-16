@@ -7,17 +7,23 @@ from tcod.console import Console
 from actions import EscapeAction, MovementAction
 from entity import Entity
 from input_handlers import EventHandler
+from game_map import GameMap
 
 
 class Engine:
     def __init__(
-        self, entities: list[Entity], event_handler: EventHandler, player: Entity
+        self,
+        entities: list[Entity],
+        event_handler: EventHandler,
+        game_map: GameMap,
+        player: Entity,
     ):
         if player not in entities:
             entities += [player]
         self.entities = entities
         self.event_handler = event_handler
         self.player = player
+        self.game_map = game_map
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -26,13 +32,11 @@ class Engine:
             if action is None:
                 continue
 
-            if isinstance(action, MovementAction):
-                self.player.move(action)
-
-            elif isinstance(action, EscapeAction):
-                raise SystemExit()
+            action.perform(self, self.player)
 
     def render(self, console: Console, context: Context) -> None:
+        self.game_map.render(console)
+
         for entity in self.entities:
             console.print(**asdict(entity))
 
